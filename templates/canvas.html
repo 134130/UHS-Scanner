@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+</head>
+
+<body>
+    <canvas id="canvas" width="{{ width }}" height="{{ height }}" onclick="clickCanvas(window.event)">
+    </canvas>
+
+    <script>
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var catImage = new Image();
+        catImage.src = "{{ url_for('static', filename=filepath) }}";
+
+        var count = 0;
+        var src = Array();
+
+
+        catImage.addEventListener('load', eventCatImgLoaded, false);
+        function eventCatImgLoaded() {
+            ctx.drawImage(catImage, 0, 0);
+        }
+
+        function clickCanvas(event) {
+            var x = event.pageX;
+            var y = event.pageY;
+            
+            var path = new Path2D();
+            ctx.fillStyle = "rgb(0, 255, 0)";
+            path.arc(x-10, y-10, 10, 0, 2*Math.PI);
+            ctx.fill(path);
+
+            src.push([x-10, y-10]);
+            count++;
+            if (count > 3) {
+                var url = "/pt?x1=" + src[0][0] + "&y1=" + src[0][1];
+                url += "&x2=" + src[1][0] + "&y2=" + src[1][1];
+                url += "&x3=" + src[2][0] + "&y3=" + src[2][1];
+                url += "&x4=" + src[3][0] + "&y4=" + src[3][1];
+                url += "&filename={{ filepath }}";
+                window.location.href = url;
+            }
+        }
+
+    </script>
+</body>
+
+</html>
